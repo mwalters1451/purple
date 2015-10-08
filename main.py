@@ -45,9 +45,19 @@ class Lane():
     
         pygame.draw.rect(gameDisplay, (255,0,0), [self.xposition , 100, 100, self.proportion])
         
-        pygame.draw.rect(gameDisplay, button_color, [self.xposition, 30, 100, 50])
+        # red switches
+        if self.red_switch == False:
+            pygame.draw.rect(gameDisplay, button_color, [self.xposition, 30, 100, 50])
+        else:
+            pygame.draw.rect(gameDisplay, (255,0,0), [self.xposition, 30, 100, 50])
         
-        pygame.draw.rect(gameDisplay, button_color, [self.xposition, 525, 100, 50])
+        #blue switches
+        if self.blue_switch == False:
+            pygame.draw.rect(gameDisplay, button_color, [self.xposition, 525, 100, 50])
+        else:
+            pygame.draw.rect(gameDisplay, (0,0,255), [self.xposition, 525, 100, 50])
+        
+
         
         
     
