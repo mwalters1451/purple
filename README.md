@@ -2,6 +2,8 @@
 
 install pygame: http://www.pygame.org/download.shtml
 
+Font type download: http://www.dafont.com/arcade-classic-pizz.font
+
 
 
 purple is a game in which one player attempts to fill one of five lanes with their color. 
