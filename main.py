@@ -7,6 +7,7 @@ display_width = 840
 display_height = 600
 button_color = (30, 50, 70)
 
+game_over = False
 lane_height = 400
 
 white = (255,255,255)
@@ -57,8 +58,14 @@ class Lane():
         else:
             pygame.draw.rect(gameDisplay, (0,0,255), [self.xposition, 525, 100, 50])
         
-
-        
+    def check_for_win_cond(self):
+        if self.proportion == lane_height:
+            print "red wins"
+            game_over = False
+            print still_playing
+        elif self.proportion == 0:
+            print "blue wins"
+            game_over = False
         
     
 class Player():
@@ -79,6 +86,7 @@ class Player():
                 if self.used_switches < 3:
                     lanes[lane].red_switch = True
                     self.used_switches +=1
+                
         else:
             
             #blue player
@@ -98,10 +106,31 @@ class AI():
         
         
     def change_red_score(self):
-    
+        
+        
         if self.time_check < pygame.time.get_ticks():
-            self.time_check += 3000
-            computer.changeSwitch(0)
+            
+            first_lane = random.randint(0,4)
+            second_lane = random.randint(0,4)
+            while first_lane == second_lane:
+                second_lane = random.randint(0,4)
+            third_lane = random.randint(0,4)
+            
+            while third_lane == second_lane or third_lane == first_lane:
+                third_lane = random.randint(0,4)
+            print first_lane
+            print second_lane
+            print third_lane
+            
+            self.time_check += 1000
+            
+            
+            
+            
+            computer.changeSwitch(first_lane)
+            computer.changeSwitch(second_lane)
+            computer.changeSwitch(third_lane)
+            
             print "now!"
         
         
@@ -110,11 +139,48 @@ def draw_board():
     for i in lanes:
         i.draw_lane()
 
-                     
+def display_message(display_text, size, x, y):
+    font = pygame.font.Font('ARCADECLASSIC.ttf', size)
+    text = font.render(display_text, True, (0, 0, 0))
+        
+    gameDisplay.blit(text, (x,y))
+        
 
-def game_loop():
-    still_playing = True
+def start_screen():
+    still_playing= True
+    
     while still_playing:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse = pygame.mouse.get_pos()
+                # print "down"
+                if mouse[0] > 125 and mouse[0] < 375 and mouse[1] > 400 and mouse[1] < 475:
+                    game_loop()
+        gameDisplay.fill(white)
+        
+        
+        #background
+        pygame.draw.rect(gameDisplay, (255, 0, 0), [ 0, 0 , display_width, display_height / 2])
+        pygame.draw.rect(gameDisplay, (0, 0, 255), [ 0, display_height/2 , display_width, display_height / 2])
+        
+        display_message('PURPLE', 185 , 110 , 50)
+        display_message('PLAY', 110, 125, 400)
+        display_message('HELP', 110, 460, 400)
+        
+        
+        
+        pygame.display.update()
+        clock.tick(40)
+    
+
+                     
+def game_loop():
+    
+    still_playing = True
+    while still_playing == True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -130,21 +196,23 @@ def game_loop():
             #print(event)
         
         gameDisplay.fill(white)
-        
+        AI_controller.change_red_score()
         
         lane1.checkSwitches()
         lane2.checkSwitches()
         lane3.checkSwitches()
         lane4.checkSwitches()
         lane5.checkSwitches()
-        
-        
         draw_board()
         
-        pygame.display.update()
-        clock.tick(20)
-    
-    
+        for i in lanes:
+            if i.proportion == lane_height or i.proportion == 0:
+                still_playing = False
+        
+        pygame.display.update() 
+        clock.tick(40)
+
+
 
 lane1 = Lane(1)
 lane2 = Lane(2)
@@ -157,9 +225,5 @@ computer = Player('red')
 AI_controller = AI()
 
 lanes = [lane1, lane2, lane3, lane4, lane5]
-
-
-
-game_loop()
-
+start_screen()
 
